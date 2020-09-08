@@ -14,6 +14,7 @@ public class LoginTestCase extends BaseTest {
 	public void LIA() {
 
 		driver.findElement(By.name("username")).sendKeys("ankit.jaiswal");
+		
 		driver.findElement(By.name("password")).sendKeys("Summer@12345");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 
