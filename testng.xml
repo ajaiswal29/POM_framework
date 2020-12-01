@@ -6,7 +6,7 @@
   <parameter name = "browser" value = "chrome"></parameter>
     <classes>
       <class name="testcases.LoginTestCase"/>
-    </classes>
+      </classes>
   </test> <!-- LoginTestCase -->
   
  <!--  <test  name="LoginTestCase 1">

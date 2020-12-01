@@ -18,7 +18,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
 import util.Excelconfig;
+import util.Helper;
 
 public class BaseTest {
 
@@ -28,7 +33,8 @@ public class BaseTest {
 	static public FileInputStream fis;
 	static public FileInputStream Locator;
 	static public Excelconfig exceldata;
-	static public Logger logger;
+	public ExtentReports report;
+	public ExtentTest logger;
 	
 	
 	@BeforeMethod
@@ -39,12 +45,7 @@ public class BaseTest {
 	
 	public void init() throws IOException {
 		
-		Logger.getLogger("BaseTest");
-		PropertyConfigurator.configure("Log4j.properties");
-		
-		//Generating logs
-		
-
+		//select path of current working directory
 		String Userpath = System.getProperty("user.dir");
 		
 		//Read data from excel
@@ -58,6 +59,12 @@ public class BaseTest {
 
 		config.load(fis);
 		objectrepo.load(Locator);
+		
+		//Extent Reporting
+		ExtentHtmlReporter extent = new ExtentHtmlReporter(Userpath+"\\Reports\\Login"+Helper.getCurrentDateTime()+".html");
+		report = new ExtentReports();
+		report.attachReporter(extent);
+		
 
 		// Read from config.properties file
 		String Browservalue = config.getProperty("Browser");
@@ -66,7 +73,7 @@ public class BaseTest {
 		if (Browservalue.equalsIgnoreCase("chrome")) {
 			System.setProperty("webdriver.chrome.driver", Userpath + "\\Driver\\chromedriver.exe");
 			driver = new ChromeDriver();
-			logger.info("Opening Chrome");
+			
 		} else if (Browservalue.equalsIgnoreCase("firefox")) {
 			System.setProperty("webdriver.gecko.driver", Userpath + "\\Driver\\geckodriver.exe");
 			driver = new FirefoxDriver();
@@ -74,14 +81,14 @@ public class BaseTest {
 		} else if (Browservalue.equalsIgnoreCase("ie")) {
 			System.setProperty("webdriver.ie.driver", Userpath + "\\Driver\\IEDriverServer.exe");
 			driver = new InternetExplorerDriver();
-			logger.info("Opening IE");
+			
 		}
 		
 		String URL = config.getProperty("url");
 		driver.manage().window().maximize();
-		//logger.info("Maximizing the Window");
+		
 		driver.get(URL);
-		//logger.info("Entering URL");
+		
 
 	}
 
@@ -89,6 +96,7 @@ public class BaseTest {
 
 	public void Appclose() {
 		driver.close();
+		report.flush();
 	}
 
 }
